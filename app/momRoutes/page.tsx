@@ -8,6 +8,9 @@ export default function MomRoutes() {
     const [origin, setOrigin] = useState("");
     const [destination, setDestination] = useState("");
     const [routes, setRoutes] = useState<google.maps.DirectionsRoute[]>([]);
+    const [maxWalkTime, setMaxWalkTime] = useState(30); // default 30 min
+    const [prioritizeElevators, setPrioritizeElevators] = useState(true);
+
 
   useEffect(() => {
     const initMap = () => {
@@ -61,28 +64,57 @@ export default function MomRoutes() {
 
   return (
     <div className="w-full h-screen relative">
-      <div className="absolute z-10 top-4 left-4 bg-white p-4 shadow rounded w-80 space-y-2">
-        <input
-          type="text"
-          placeholder="Start (e.g. 123 Main St)"
-          value={origin}
-          onChange={(e) => setOrigin(e.target.value)}
-          className="w-full border p-2 text-sm rounded"
-        />
-        <input
-          type="text"
-          placeholder="Destination"
-          value={destination}
-          onChange={(e) => setDestination(e.target.value)}
-          className="w-full border p-2 text-sm rounded"
-        />
-        <button
-          onClick={getMomRoute}
-          className="w-full bg-pink-500 text-white p-2 rounded font-semibold text-sm"
-        >
-          Get MomRoute
-        </button>
-      </div>
+<div className="absolute z-10 top-4 left-4 bg-white/90 backdrop-blur p-4 shadow-xl rounded-xl w-80 space-y-4 text-[15px] font-medium text-gray-800">
+  <h2 className="text-lg font-bold text-gray-900">Plan Your MomRoute</h2>
+
+  <input
+    type="text"
+    placeholder="Start"
+    value={origin}
+    onChange={(e) => setOrigin(e.target.value)}
+    className="w-full border border-gray-300 p-2 rounded-md bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-400"
+  />
+
+  <input
+    type="text"
+    placeholder="Destination"
+    value={destination}
+    onChange={(e) => setDestination(e.target.value)}
+    className="w-full border border-gray-300 p-2 rounded-md bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-400"
+  />
+
+  <div className="space-y-1">
+    <label className="block text-sm font-semibold">Max walking time:</label>
+    <select
+      value={maxWalkTime}
+      onChange={(e) => setMaxWalkTime(parseInt(e.target.value))}
+      className="w-full border border-gray-300 p-2 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-pink-400"
+    >
+      {[15, 30, 45, 60].map((min) => (
+        <option key={min} value={min}>
+          {min} minutes
+        </option>
+      ))}
+    </select>
+  </div>
+
+  <label className="flex items-center gap-2 text-sm">
+    <input
+      type="checkbox"
+      checked={prioritizeElevators}
+      onChange={(e) => setPrioritizeElevators(e.target.checked)}
+    />
+    Prioritize elevators (avoid broken stations)
+  </label>
+
+  <button
+    onClick={getMomRoute}
+    className="w-full bg-pink-500 hover:bg-pink-600 transition text-white p-2 rounded-lg font-semibold shadow-md"
+  >
+    Get MomRoute
+  </button>
+</div>
+
 
       <div ref={mapRef} className="w-full h-full" />
 
